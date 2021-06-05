@@ -1,0 +1,11 @@
+[package]
+name = "gameone"
+version = "0.1.0"
+authors = ["Adam Matthews <adamdmatthews@users.noreply.github.com>"]
+edition = "2018"
+
+[profile.release]
+codegen-units = 1
+lto = true
+
+[dependencies]
