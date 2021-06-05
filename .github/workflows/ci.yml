@@ -11,6 +11,13 @@ jobs:
 
     runs-on: ${{ matrix.platform }}
     steps:
+      - name: Install linux packages
+        if: runner.os == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install libasound2-dev
+          sudo apt-get install libudev-dev
+
       - uses: actions/checkout@v2
 
       - name: Check formatting
