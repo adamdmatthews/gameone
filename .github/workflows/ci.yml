@@ -1,0 +1,26 @@
+name: CI
+on: push
+env:
+  CARGO_TERM_COLOR: always
+jobs:
+  build:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, windows-latest, macOS-latest]
+        profile: ["", --release]
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+
+      - name: Build
+        run: cargo build ${{ matrix.profile }}
+
+      - name: Lint
+        run: cargo clippy ${{ matrix.profile }}
+
+      - name: Run tests
+        run: cargo test ${{ matrix.profile }}
