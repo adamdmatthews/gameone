@@ -1,15 +1,13 @@
 #![warn(clippy::all, clippy::pedantic)]
 
-use bevy::log::LogPlugin;
-use bevy::prelude::*;
+mod game;
+use game::Gameone;
 
-fn hello_world() {
-    info!("Hello, world!");
-}
+use bevy::prelude::*;
 
 fn main() {
     App::build()
-        .add_plugin(LogPlugin)
-        .add_system(hello_world.system())
+        .add_plugin(Gameone)
+        .add_plugins(DefaultPlugins)
         .run();
 }
