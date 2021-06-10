@@ -24,6 +24,7 @@ jobs:
             directory: release
             flag: "--release"
 
+    name: ${{ matrix.platform.name }} ${{ matrix.profile.name }}
     runs-on: ${{ matrix.platform.target }}
     steps:
       - name: Install linux packages
