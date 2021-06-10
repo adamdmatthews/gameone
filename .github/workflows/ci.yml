@@ -6,10 +6,25 @@ jobs:
   build:
     strategy:
       matrix:
-        platform: [ubuntu-latest, windows-latest, macOS-latest]
-        profile: ["", --release]
+        platform:
+          - name: Linux
+            target: ubuntu-latest
+            executable: gameone
+          - name: Windows
+            target: windows-latest
+            executable: gameone.exe
+          - name: Mac
+            target: macos-latest
+            executable: gameone
+        profile:
+          - name: Debug
+            directory: debug
+            flag: ""
+          - name: Release
+            directory: release
+            flag: "--release"
 
-    runs-on: ${{ matrix.platform }}
+    runs-on: ${{ matrix.platform.target }}
     steps:
       - name: Install linux packages
         if: runner.os == 'linux'
@@ -22,16 +37,22 @@ jobs:
 
       - uses: Swatinem/rust-cache@v1
         with:
-          key: ${{ matrix.platform }}${{ matrix.profile }}
+          key: ${{ matrix.platform.name }}-${{ matrix.profile.name }}
 
       - name: Check formatting
         run: cargo fmt --all -- --check
 
       - name: Build
-        run: cargo build ${{ matrix.profile }}
+        run: cargo build ${{ matrix.profile.flag }}
 
       - name: Lint
-        run: cargo clippy ${{ matrix.profile }}
+        run: cargo clippy ${{ matrix.profile.flag }}
 
       - name: Run tests
-        run: cargo test ${{ matrix.profile }}
+        run: cargo test ${{ matrix.profile.flag }}
+
+      - name: Publish artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.platform.name }}-${{ matrix.profile.name }}
+          path: target/${{ matrix.profile.directory }}/${{ matrix.platform.executable }}
