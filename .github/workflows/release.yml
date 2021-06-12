@@ -1,0 +1,54 @@
+name: release
+on:
+  push:
+    branches:
+      - main
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.release.outputs.upload_url }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: release
+        uses: GongT/actions-recreate-release@v1
+        with:
+          prerelease: true
+          release_name: Latest development build
+          tag_name: trunk
+
+  upload-release:
+    strategy:
+      matrix:
+        platform:
+          - name: Linux
+            target: ubuntu-latest
+            executable: gameone
+          - name: Windows
+            target: windows-latest
+            executable: gameone.exe
+          - name: MacOS
+            target: macos-latest
+            executable: gameone
+    needs: ["create-release"]
+    runs-on: ${{ matrix.platform.target }}
+    steps:
+      - name: Install Linux packages
+        if: runner.os == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install libasound2-dev
+          sudo apt-get install libudev-dev
+      - uses: actions/checkout@v2
+      # would be nice to LTO=true/codegen-units=1 here
+      - name: build
+        run: cargo build --release
+      - name: Upload release
+        uses: actions/upload-release-asset@v1
+        with:
+          asset_name: ${{ matrix.platform.name }}-${{ matrix.platform.executable }}
+          asset_path: ./target/release/${{ matrix.platform.executable }}
+          asset_content_type: application/octet-stream
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
