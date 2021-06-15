@@ -11,12 +11,15 @@ jobs:
     outputs:
       upload_url: ${{ steps.release.outputs.upload_url }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          delete_release: true
+          tag_name: trunk
       - id: release
-        uses: GongT/actions-recreate-release@v1
+        uses: actions/create-release@v1
         with:
           prerelease: true
-          release_name: Latest development build
+          release_name: trunk
           tag_name: trunk
 
   upload-release:
