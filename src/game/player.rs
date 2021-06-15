@@ -5,7 +5,7 @@ use std::f32::consts::PI;
 pub struct Player;
 impl Plugin for Player {
     fn build(&self, app: &mut bevy::prelude::AppBuilder) {
-        app.add_system(camera.system())
+        app.add_startup_system(camera.system())
             .add_system(movement.system());
     }
 }
