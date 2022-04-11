@@ -57,7 +57,7 @@ jobs:
         run: cargo test ${{ matrix.profile.flag }}
 
       - name: Publish artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.platform.name }}-${{ matrix.profile.name }}
           path: target/${{ matrix.profile.directory }}/${{ matrix.platform.executable }}
