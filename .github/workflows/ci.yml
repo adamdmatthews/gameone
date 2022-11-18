@@ -40,7 +40,7 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - uses: Swatinem/rust-cache@v1
+      - uses: Swatinem/rust-cache@v2
         with:
           key: ${{ matrix.platform.name }}-${{ matrix.profile.name }}
 
